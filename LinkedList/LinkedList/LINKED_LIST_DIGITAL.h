@@ -21,11 +21,20 @@ void Add(struct LINKED_LIST_DIGITAL * likptr, int content) {
 	}
 }
 
-struct LINKED_LIST_DIGITAL * CreateFirst(int content) {
+struct LINKED_LIST_DIGITAL * CreateNode(int content) {
 	struct LINKED_LIST_DIGITAL * node = (struct LINKED_LIST_DIGITAL*)malloc(sizeof(struct LINKED_LIST_DIGITAL));
 	node->content = content;
 	node->next = NULL;
 	return node;
+}
+
+size_t Count(struct LINKED_LIST_DIGITAL * likptr) {
+	size_t incre = 0;
+	while (likptr != NULL) {
+		incre += 1;
+		likptr = likptr->next;
+	}
+	return incre;
 }
 
 void ForEach(struct LINKED_LIST_DIGITAL * likptr, void(*p)(int)) {
@@ -47,19 +56,50 @@ struct LINKED_LIST_DIGITAL * Find(struct LINKED_LIST_DIGITAL * likptr, int conte
 	return NULL;
 }
 
-struct LINKED_LIST_DIGITAL * Remove(struct LINKED_LIST_DIGITAL * likptr, int index) {
+struct LINKED_LIST_DIGITAL * Remove(struct LINKED_LIST_DIGITAL * likptr, size_t index) {
 	// 移除第 index 个节点并返回新的链表
 	// 比如链表：(1)->(20)->(20)->(4)->(5)->(6)->(5)->(5)
-	// 执行 struct LINKED_LILST_dIGITAL * newlik = Find(likptr,5)
+	// 执行 struct LINKED_LILST_dIGITAL * newlik = Remove(likptr,5)
 	// newlik 的值为 (1)->(20)->(20)->(4)->(5)->(5)->(5)
-	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Find(likptr,5)
+	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Remove(likptr,5)
 	// newlik 的值为 (1)->(20)->(20)->(4)->(5)->(5)
-	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Find(likptr,5)
+	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Remove(likptr,5)
 	// newlik 的值为 (1)->(20)->(20)->(4)->(5)
-	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Find(likptr,2)
+	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Remove(likptr,2)
 	// newlik 的值为 (1)->(20)->(4)->(5)
-	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Find(likptr,2)
+	// 再次执行 struct LINKED_LILST_dIGITAL * newlik = Remove(likptr,2)
 	// newlik 的值为 (1)->(20)->(5)
 	// 以此类推......
-	return NULL;
+	if (likptr != NULL) {
+		if (index < Count(likptr)) {
+			struct LINKED_LIST_DIGITAL * previous = NULL;
+			struct LINKED_LIST_DIGITAL * firstNode = likptr;
+			for (size_t i = 0; i <= index; i++) {
+				if (i == index) {
+					previous->next = likptr->next;
+					free(likptr);
+				}
+				else {
+					previous = likptr;
+					likptr = likptr->next;
+				}
+			}
+			return firstNode;
+		}
+		else {
+			abort();
+		}
+	}
+}
+
+void RemoveAll(struct LINKED_LIST_DIGITAL ** likptr) {
+	if (*likptr != NULL) {
+		struct LINKED_LIST_DIGITAL * temp = NULL;
+		while (*likptr != NULL) {
+			temp = *likptr;
+			*likptr = (*likptr)->next;
+			free(temp);
+		}
+		likptr = NULL;
+	}
 }
